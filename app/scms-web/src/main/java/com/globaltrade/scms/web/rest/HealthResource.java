@@ -1,7 +1,6 @@
 package com.globaltrade.scms.web.rest;
 
 import com.globaltrade.scms.api.shipment.ShipmentServiceLocal;
-
 import jakarta.ejb.EJB;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.Path;
@@ -17,7 +16,7 @@ public class HealthResource {
     @GET
     @Produces(MediaType.TEXT_PLAIN)
     public String health() {
-        return "OK - " + shipmentService.getServiceStatus();
+        long vendorCount = shipmentService.countVendors();
+        return "OK - " + shipmentService.getServiceStatus() + " | Active Vendors in DB: " + vendorCount;
     }
-
 }
