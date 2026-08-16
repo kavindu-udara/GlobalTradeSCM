@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+         http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>com.globaltrade.scms</groupId>
+        <artifactId>globaltrade-scms-parent</artifactId>
+        <version>1.0.0</version>
+        <relativePath>../../pom.xml</relativePath>
+    </parent>
+
+    <artifactId>scms-ear</artifactId>
+    <packaging>ear</packaging>
+
+    <name>SCMS Enterprise Archive Module</name>
+
+    <dependencies>
+
+        <dependency>
+            <groupId>com.globaltrade.scms</groupId>
+            <artifactId>scms-ejb-core</artifactId>
+            <type>ejb</type>
+        </dependency>
+
+        <dependency>
+            <groupId>com.globaltrade.scms</groupId>
+            <artifactId>scms-web</artifactId>
+            <type>war</type>
+        </dependency>
+
+    </dependencies>
+
+    <build>
+        <finalName>globaltrade-scms</finalName>
+    </build>
+
+</project>
