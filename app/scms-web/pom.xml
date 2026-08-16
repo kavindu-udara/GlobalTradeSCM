@@ -23,11 +23,13 @@
         <dependency>
             <groupId>com.globaltrade.scms</groupId>
             <artifactId>scms-common</artifactId>
+            <scope>provided</scope>
         </dependency>
 
         <dependency>
             <groupId>com.globaltrade.scms</groupId>
             <artifactId>scms-ejb-api</artifactId>
+            <scope>provided</scope>
         </dependency>
 
         <dependency>
