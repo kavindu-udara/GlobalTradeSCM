@@ -1,0 +1,19 @@
+# Maven
+target/
+
+# IntelliJ
+.idea/
+*.iml
+out/
+
+# macOS
+.DS_Store
+
+# Logs
+*.log
+
+# Environment
+.env
+
+# WildFly
+standalone/configuration/standalone_xml_history/
