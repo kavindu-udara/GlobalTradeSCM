@@ -1,11 +1,12 @@
 package com.globaltrade.scms.core.timer;
 
 import com.globaltrade.scms.api.alert.AlertServiceLocal;
+import com.globaltrade.scms.api.timer.CustomsTimerServiceLocal; // Import the interface
 import jakarta.annotation.Resource;
 import jakarta.ejb.*;
 
 @Stateless
-public class CustomsDeadlineTimerBean {
+public class CustomsDeadlineTimerBean implements CustomsTimerServiceLocal { // Implement the interface
 
     @Resource
     private TimerService timerService;
@@ -13,12 +14,10 @@ public class CustomsDeadlineTimerBean {
     @EJB
     private AlertServiceLocal alertService;
 
+    @Override
     public void scheduleCustomsReminder(String documentId, long delayInSeconds) {
         TimerConfig config = new TimerConfig();
         config.setInfo("CustomsDoc-" + documentId);
-
-        // persistent=true is CRITICAL for the assignment.
-        // If the server crashes, the timer survives and fires when the server restarts.
         config.setPersistent(true);
 
         timerService.createSingleActionTimer(delayInSeconds * 1000, config);
