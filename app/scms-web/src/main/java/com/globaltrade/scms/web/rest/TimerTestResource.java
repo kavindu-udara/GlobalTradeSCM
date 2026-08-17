@@ -19,6 +19,12 @@ public class TimerTestResource {
     @EJB
     private com.globaltrade.scms.api.shipment.ShipmentServiceLocal shipmentService;
 
+    @EJB
+    private com.globaltrade.scms.api.inventory.InventoryServiceLocal inventoryService;
+
+    @EJB
+    private com.globaltrade.scms.api.customs.CustomsClearanceServiceLocal customsService;
+
     @GET
     @Path("/schedule-customs/{docId}")
     @Produces(MediaType.TEXT_PLAIN)
@@ -41,5 +47,27 @@ public class TimerTestResource {
     public String optimizeRoute() {
         shipmentService.simulateHeavyRouteOptimization();
         return "Route optimization executed. Check console for Performance Interceptor output!";
+    }
+
+    // Endpoint 1: Test CMT + Pessimistic Locking + ApplicationException Rollback
+    @GET
+    @Path("/inventory/deduct/{id}/{qty}")
+    @Produces(MediaType.TEXT_PLAIN)
+    public String deductInventory(@PathParam("id") Long id, @PathParam("qty") int qty) {
+        try {
+            inventoryService.deductStock(id, qty);
+            return "Stock deducted successfully.";
+        } catch (com.globaltrade.scms.common.exception.InventoryShortageException e) {
+            // Because of @ApplicationException(rollback=true), the transaction was already rolled back by the container!
+            return "Transaction Rolled Back! Reason: " + e.getMessage();
+        }
+    }
+
+    // Endpoint 2: Test BMT (Manual Commit/Rollback)
+    @GET
+    @Path("/customs/clear/{shipmentId}/{simulateFailure}")
+    @Produces(MediaType.TEXT_PLAIN)
+    public String clearCustoms(@PathParam("shipmentId") Long shipmentId, @PathParam("simulateFailure") boolean simulateFailure) {
+        return customsService.processCustomsClearance(shipmentId, simulateFailure);
     }
 }
