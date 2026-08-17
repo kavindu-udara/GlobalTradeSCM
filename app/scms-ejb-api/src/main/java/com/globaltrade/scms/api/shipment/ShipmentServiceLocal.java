@@ -4,4 +4,5 @@ public interface ShipmentServiceLocal {
     long countShipments();
     long countVendors(); // NEW METHOD
     String getServiceStatus();
+    void simulateHeavyRouteOptimization();
 }

@@ -16,6 +16,9 @@ public class TimerTestResource {
     @EJB
     private AlertServiceLocal alertService;
 
+    @EJB
+    private com.globaltrade.scms.api.shipment.ShipmentServiceLocal shipmentService;
+
     @GET
     @Path("/schedule-customs/{docId}")
     @Produces(MediaType.TEXT_PLAIN)
@@ -30,5 +33,13 @@ public class TimerTestResource {
     @Produces(MediaType.TEXT_PLAIN)
     public String getAlerts() {
         return "Unacknowledged Alerts in DB: " + alertService.countUnacknowledgedAlerts();
+    }
+
+    @GET
+    @Path("/optimize-route")
+    @Produces(MediaType.TEXT_PLAIN)
+    public String optimizeRoute() {
+        shipmentService.simulateHeavyRouteOptimization();
+        return "Route optimization executed. Check console for Performance Interceptor output!";
     }
 }
