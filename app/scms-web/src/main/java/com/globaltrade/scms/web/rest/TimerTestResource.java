@@ -83,6 +83,9 @@ public class TimerTestResource {
     @RolesAllowed({"SYSTEM_ADMIN"})
     @Produces(MediaType.TEXT_PLAIN)
     public String adminOnly() {
+        if (securityContext.getUserPrincipal() == null) {
+            return "Anonymous access denied.";
+        }
         return "Welcome System Admin: " + securityContext.getUserPrincipal().getName();
     }
 
@@ -92,6 +95,9 @@ public class TimerTestResource {
     @RolesAllowed({"LOGISTICS_COORDINATOR", "SYSTEM_ADMIN"})
     @Produces(MediaType.TEXT_PLAIN)
     public String logisticsDashboard() {
+        if (securityContext.getUserPrincipal() == null) {
+            return "Anonymous access denied.";
+        }
         if (securityContext.isUserInRole("SYSTEM_ADMIN")) {
             return "Welcome Admin accessing Logistics Dashboard. Full access granted.";
         }
