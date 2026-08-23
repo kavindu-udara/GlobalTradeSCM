@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns="https://jakarta.ee/xml/ns/jakartaee"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="https://jakarta.ee/xml/ns/jakartaee https://jakarta.ee/xml/ns/jakartaee/web-app_6_0.xsd"
+         version="6.0">
+
+    <!-- 1. Protect the secure endpoints -->
+    <security-constraint>
+        <web-resource-collection>
+            <web-resource-name>Secure Supply Chain API</web-resource-name>
+            <url-pattern>/api/timers/secure/*</url-pattern>
+        </web-resource-collection>
+        <auth-constraint>
+            <!-- Only these roles are allowed to access the /secure/* path -->
+            <role-name>SYSTEM_ADMIN</role-name>
+            <role-name>LOGISTICS_COORDINATOR</role-name>
+            <role-name>WAREHOUSE_MANAGER</role-name>
+            <role-name>CUSTOMS_AGENT</role-name>
+            <role-name>VENDOR_REPRESENTATIVE</role-name>
+        </auth-constraint>
+    </security-constraint>
+
+    <!-- 2. Enforce HTTP Basic Authentication -->
+    <login-config>
+        <auth-method>BASIC</auth-method>
+        <realm-name>scms-realm</realm-name>
+    </login-config>
+
+    <!-- 3. Declare the roles used in the application -->
+    <security-role>
+        <role-name>SYSTEM_ADMIN</role-name>
+    </security-role>
+    <security-role>
+        <role-name>LOGISTICS_COORDINATOR</role-name>
+    </security-role>
+    <security-role>
+        <role-name>WAREHOUSE_MANAGER</role-name>
+    </security-role>
+    <security-role>
+        <role-name>CUSTOMS_AGENT</role-name>
+    </security-role>
+    <security-role>
+        <role-name>VENDOR_REPRESENTATIVE</role-name>
+    </security-role>
+
+</web-app>
