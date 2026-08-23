@@ -5,6 +5,9 @@ import com.globaltrade.scms.api.timer.CustomsTimerServiceLocal; // Import the AP
 import jakarta.ejb.EJB;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
+import jakarta.annotation.security.RolesAllowed;
+import jakarta.ws.rs.core.Context;
+import jakarta.ws.rs.core.SecurityContext;
 
 @Path("/timers")
 public class TimerTestResource {
@@ -70,4 +73,45 @@ public class TimerTestResource {
     public String clearCustoms(@PathParam("shipmentId") Long shipmentId, @PathParam("simulateFailure") boolean simulateFailure) {
         return customsService.processCustomsClearance(shipmentId, simulateFailure);
     }
+
+    @Context
+    private SecurityContext securityContext;
+
+    // DECLARATIVE SECURITY: Only SYSTEM_ADMIN can access this
+    @GET
+    @Path("/secure/admin-only")
+    @RolesAllowed({"SYSTEM_ADMIN"})
+    @Produces(MediaType.TEXT_PLAIN)
+    public String adminOnly() {
+        return "Welcome System Admin: " + securityContext.getUserPrincipal().getName();
+    }
+
+    // DECLARATIVE SECURITY: Logistics or Admin can access
+    @GET
+    @Path("/secure/logistics")
+    @RolesAllowed({"LOGISTICS_COORDINATOR", "SYSTEM_ADMIN"})
+    @Produces(MediaType.TEXT_PLAIN)
+    public String logisticsDashboard() {
+        if (securityContext.isUserInRole("SYSTEM_ADMIN")) {
+            return "Welcome Admin accessing Logistics Dashboard. Full access granted.";
+        }
+        return "Welcome Logistics Coordinator: " + securityContext.getUserPrincipal().getName() + ". Read-only access granted.";
+    }
+
+    // Test endpoint to trigger the Security Interceptor's programmatic block
+    @GET
+    @Path("/secure/update-vendor")
+    @RolesAllowed({"VENDOR_REPRESENTATIVE"})
+    @Produces(MediaType.TEXT_PLAIN)
+    public String updateVendorProfile() {
+        try {
+            // This call crosses the boundary into the EJB, triggering the SecurityInterceptor!
+            inventoryService.deductStock(1L, 1);
+            return "Vendor updated inventory successfully.";
+        } catch (Exception e) {
+            // The interceptor throws a SecurityException, which we catch here
+            return "Interceptor Blocked Request: " + e.getMessage();
+        }
+    }
+
 }
