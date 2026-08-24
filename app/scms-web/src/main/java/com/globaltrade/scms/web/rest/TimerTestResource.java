@@ -28,6 +28,9 @@ public class TimerTestResource {
     @EJB
     private com.globaltrade.scms.api.customs.CustomsClearanceServiceLocal customsService;
 
+    @EJB
+    private com.globaltrade.scms.api.carrier.CarrierServiceLocal carrierService;
+
     @GET
     @Path("/schedule-customs/{docId}")
     @Produces(MediaType.TEXT_PLAIN)
@@ -118,6 +121,14 @@ public class TimerTestResource {
             // The interceptor throws a SecurityException, which we catch here
             return "Interceptor Blocked Request: " + e.getMessage();
         }
+    }
+
+    @GET
+    @Path("/carrier/dispatch/{shipmentId}/{simulateOutage}")
+    @Produces(MediaType.TEXT_PLAIN)
+    public String dispatchToCarrier(@PathParam("shipmentId") Long shipmentId, @PathParam("simulateOutage") boolean simulateOutage) {
+        carrierService.dispatchToCarrier(shipmentId, simulateOutage);
+        return "Shipment " + shipmentId + " dispatched successfully to carrier.";
     }
 
 }
