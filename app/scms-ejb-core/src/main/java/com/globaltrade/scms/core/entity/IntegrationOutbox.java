@@ -19,7 +19,7 @@ public class IntegrationOutbox {
     private Long aggregateId;
 
     // Map PostgreSQL JSONB to a Java String
-    @Column(name = "payload", nullable = false, columnDefinition = "jsonb")
+    @Column(name = "payload", nullable = false, columnDefinition = "text")
     private String payload;
 
     @Column(name = "status", nullable = false, length = 30)
