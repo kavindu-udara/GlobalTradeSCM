@@ -24,6 +24,11 @@
             <groupId>com.globaltrade.scms</groupId>
             <artifactId>scms-common</artifactId>
         </dependency>
+        <dependency>
+            <groupId>jakarta.platform</groupId>
+            <artifactId>jakarta.jakartaee-api</artifactId>
+            <scope>provided</scope>
+        </dependency>
 
     </dependencies>
 

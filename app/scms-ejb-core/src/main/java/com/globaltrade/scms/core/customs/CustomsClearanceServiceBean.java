@@ -1,6 +1,7 @@
 package com.globaltrade.scms.core.customs;
 
 import com.globaltrade.scms.api.customs.CustomsClearanceServiceLocal;
+import com.globaltrade.scms.api.interceptor.LogisticsAudit;
 import com.globaltrade.scms.core.entity.Alert;
 import jakarta.annotation.Resource;
 import jakarta.ejb.Stateless;
@@ -22,6 +23,7 @@ public class CustomsClearanceServiceBean implements CustomsClearanceServiceLocal
     private UserTransaction utx; // Inject the manual transaction manager
 
     @Override
+    @LogisticsAudit(module = "CUSTOMS_GATEWAY", requiresComplianceCheck = true)
     public String processCustomsClearance(Long shipmentId, boolean simulateExternalFailure) {
         try {
             utx.begin(); // Manually start transaction
