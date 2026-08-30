@@ -83,28 +83,37 @@ public class TimerTestResource {
     // DECLARATIVE SECURITY: Only SYSTEM_ADMIN can access this
     @GET
     @Path("/secure/admin-only")
-    @RolesAllowed({"SYSTEM_ADMIN"})
     @Produces(MediaType.TEXT_PLAIN)
     public String adminOnly() {
         if (securityContext.getUserPrincipal() == null) {
             return "Anonymous access denied.";
         }
+
+        // PROGRAMMATIC SECURITY: Explicitly enforce SYSTEM_ADMIN role
+        if (!securityContext.isUserInRole("SYSTEM_ADMIN")) {
+            // This automatically triggers an HTTP 403 Forbidden response in RESTEasy
+            throw new jakarta.ws.rs.ForbiddenException("Access Denied: SYSTEM_ADMIN role required.");
+        }
+
         return "Welcome System Admin: " + securityContext.getUserPrincipal().getName();
     }
 
-    // DECLARATIVE SECURITY: Logistics or Admin can access
     @GET
     @Path("/secure/logistics")
-    @RolesAllowed({"LOGISTICS_COORDINATOR", "SYSTEM_ADMIN"})
     @Produces(MediaType.TEXT_PLAIN)
     public String logisticsDashboard() {
         if (securityContext.getUserPrincipal() == null) {
             return "Anonymous access denied.";
         }
+
+        // PROGRAMMATIC SECURITY: Allow both Admin and Logistics, but change behavior
         if (securityContext.isUserInRole("SYSTEM_ADMIN")) {
             return "Welcome Admin accessing Logistics Dashboard. Full access granted.";
+        } else if (securityContext.isUserInRole("LOGISTICS_COORDINATOR")) {
+            return "Welcome Logistics Coordinator: " + securityContext.getUserPrincipal().getName() + ". Read-only access granted.";
+        } else {
+            throw new jakarta.ws.rs.ForbiddenException("Access Denied: Insufficient privileges.");
         }
-        return "Welcome Logistics Coordinator: " + securityContext.getUserPrincipal().getName() + ". Read-only access granted.";
     }
 
     // Test endpoint to trigger the Security Interceptor's programmatic block
